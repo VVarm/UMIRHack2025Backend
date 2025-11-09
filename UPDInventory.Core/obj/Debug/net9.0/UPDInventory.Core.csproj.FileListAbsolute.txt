@@ -1,0 +1,12 @@
+C:\UPDInventory\UPDInventory.Core\bin\Debug\net9.0\UPDInventory.Core.deps.json
+C:\UPDInventory\UPDInventory.Core\bin\Debug\net9.0\UPDInventory.Core.dll
+C:\UPDInventory\UPDInventory.Core\bin\Debug\net9.0\UPDInventory.Core.pdb
+C:\UPDInventory\UPDInventory.Core\obj\Debug\net9.0\UPDInventory.Core.csproj.AssemblyReference.cache
+C:\UPDInventory\UPDInventory.Core\obj\Debug\net9.0\UPDInventory.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\UPDInventory\UPDInventory.Core\obj\Debug\net9.0\UPDInventory.Core.AssemblyInfoInputs.cache
+C:\UPDInventory\UPDInventory.Core\obj\Debug\net9.0\UPDInventory.Core.AssemblyInfo.cs
+C:\UPDInventory\UPDInventory.Core\obj\Debug\net9.0\UPDInventory.Core.csproj.CoreCompileInputs.cache
+C:\UPDInventory\UPDInventory.Core\obj\Debug\net9.0\UPDInventory.Core.dll
+C:\UPDInventory\UPDInventory.Core\obj\Debug\net9.0\refint\UPDInventory.Core.dll
+C:\UPDInventory\UPDInventory.Core\obj\Debug\net9.0\UPDInventory.Core.pdb
+C:\UPDInventory\UPDInventory.Core\obj\Debug\net9.0\ref\UPDInventory.Core.dll

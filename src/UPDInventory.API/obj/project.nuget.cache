@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "dgSpecHash": "vn4Dgbe0E8k=",
+  "success": false,
+  "projectFilePath": "C:\\UPDInventory\\src\\UPDInventory.API\\UPDInventory.API.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1100",
+      "level": "Error",
+      "message": "Не удалось разрешить \"Microsoft.AspNetCore.OpenApi (>= 8.0.20)\" для \"net8.0\". PackageSourceMapping включен, следующие источники не рассматривались: C:\\Program Files\\dotnet\\library-packs, Microsoft Visual Studio Offline Packages, nuget.org.",
+      "projectPath": "C:\\UPDInventory\\src\\UPDInventory.API\\UPDInventory.API.csproj",
+      "filePath": "C:\\UPDInventory\\src\\UPDInventory.API\\UPDInventory.API.csproj",
+      "libraryId": "Microsoft.AspNetCore.OpenApi",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1100",
+      "level": "Error",
+      "message": "Не удалось разрешить \"Swashbuckle.AspNetCore (>= 6.6.2)\" для \"net8.0\". PackageSourceMapping включен, следующие источники не рассматривались: C:\\Program Files\\dotnet\\library-packs, Microsoft Visual Studio Offline Packages, nuget.org.",
+      "projectPath": "C:\\UPDInventory\\src\\UPDInventory.API\\UPDInventory.API.csproj",
+      "filePath": "C:\\UPDInventory\\src\\UPDInventory.API\\UPDInventory.API.csproj",
+      "libraryId": "Swashbuckle.AspNetCore",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
+}

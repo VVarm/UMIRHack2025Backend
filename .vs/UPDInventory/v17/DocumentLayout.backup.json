@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\UPDInventory\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B76983DD-03D9-4B5D-91A7-43D20A87FFA8}|UPDInventory.API\\UPDInventory.API.csproj|c:\\updinventory\\updinventory.api\\updinventory.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{B76983DD-03D9-4B5D-91A7-43D20A87FFA8}|UPDInventory.API\\UPDInventory.API.csproj|solutionrelative:updinventory.api\\updinventory.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UPDInventory.API",
+              "DocumentMoniker": "C:\\UPDInventory\\UPDInventory.API\\UPDInventory.API.csproj",
+              "RelativeDocumentMoniker": "UPDInventory.API\\UPDInventory.API.csproj",
+              "ToolTip": "C:\\UPDInventory\\UPDInventory.API\\UPDInventory.API.csproj",
+              "RelativeToolTip": "UPDInventory.API\\UPDInventory.API.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-11-07T21:44:09.28Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

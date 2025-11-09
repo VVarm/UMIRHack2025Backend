@@ -1,0 +1,15 @@
+C:\UPDInventory\UPDInventory.Infrastructure\bin\Debug\net9.0\UPDInventory.Infrastructure.deps.json
+C:\UPDInventory\UPDInventory.Infrastructure\bin\Debug\net9.0\UPDInventory.Infrastructure.dll
+C:\UPDInventory\UPDInventory.Infrastructure\bin\Debug\net9.0\UPDInventory.Infrastructure.pdb
+C:\UPDInventory\UPDInventory.Infrastructure\bin\Debug\net9.0\UPDInventory.Core.dll
+C:\UPDInventory\UPDInventory.Infrastructure\bin\Debug\net9.0\UPDInventory.Core.pdb
+C:\UPDInventory\UPDInventory.Infrastructure\obj\Debug\net9.0\UPDInventory.Infrastructure.csproj.AssemblyReference.cache
+C:\UPDInventory\UPDInventory.Infrastructure\obj\Debug\net9.0\UPDInventory.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\UPDInventory\UPDInventory.Infrastructure\obj\Debug\net9.0\UPDInventory.Infrastructure.AssemblyInfoInputs.cache
+C:\UPDInventory\UPDInventory.Infrastructure\obj\Debug\net9.0\UPDInventory.Infrastructure.AssemblyInfo.cs
+C:\UPDInventory\UPDInventory.Infrastructure\obj\Debug\net9.0\UPDInventory.Infrastructure.csproj.CoreCompileInputs.cache
+C:\UPDInventory\UPDInventory.Infrastructure\obj\Debug\net9.0\UPDInven.D05ECA71.Up2Date
+C:\UPDInventory\UPDInventory.Infrastructure\obj\Debug\net9.0\UPDInventory.Infrastructure.dll
+C:\UPDInventory\UPDInventory.Infrastructure\obj\Debug\net9.0\refint\UPDInventory.Infrastructure.dll
+C:\UPDInventory\UPDInventory.Infrastructure\obj\Debug\net9.0\UPDInventory.Infrastructure.pdb
+C:\UPDInventory\UPDInventory.Infrastructure\obj\Debug\net9.0\ref\UPDInventory.Infrastructure.dll

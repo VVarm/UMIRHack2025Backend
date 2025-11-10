@@ -73,17 +73,17 @@ namespace UPDInventory.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Product>> CreateProduct(Product product)
+        public async Task<ActionResult<Product>> CreateProduct(ProductCreateDto productDto)
         {
             var userId = GetUserIdFromClaims();
-            if (!userId.HasValue || !await _organizationService.UserHasAccessToOrganizationAsync(userId.Value, product.OrganizationId))
+            if (!userId.HasValue || !await _organizationService.UserHasAccessToOrganizationAsync(userId.Value, productDto.OrganizationId))
                 return Forbid();
 
             // Проверяем уникальность штрих-кода в организации
-            if (!string.IsNullOrEmpty(product.Barcode))
+            if (!string.IsNullOrEmpty(productDto.Barcode))
             {
                 var existingProduct = await _context.Products
-                    .FirstOrDefaultAsync(p => p.OrganizationId == product.OrganizationId && p.Barcode == product.Barcode);
+                    .FirstOrDefaultAsync(p => p.OrganizationId == productDto.OrganizationId && p.Barcode == productDto.Barcode);
                 
                 if (existingProduct != null)
                 {
@@ -91,8 +91,25 @@ namespace UPDInventory.API.Controllers
                 }
             }
 
+            // Создаем Product из DTO
+            var product = new Product
+            {
+                Name = productDto.Name,
+                Barcode = productDto.Barcode,
+                Description = productDto.Description,
+                Unit = productDto.Unit,
+                IsActive = productDto.IsActive,
+                OrganizationId = productDto.OrganizationId,
+                CreatedAt = DateTime.UtcNow
+            };
+
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
+
+            // Загружаем организацию для ответа
+            await _context.Entry(product)
+                .Reference(p => p.Organization)
+                .LoadAsync();
 
             return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
         }

@@ -10,3 +10,4 @@ C:\UPDInventory\UPDInventory.Core\obj\Debug\net9.0\UPDInventory.Core.dll
 C:\UPDInventory\UPDInventory.Core\obj\Debug\net9.0\refint\UPDInventory.Core.dll
 C:\UPDInventory\UPDInventory.Core\obj\Debug\net9.0\UPDInventory.Core.pdb
 C:\UPDInventory\UPDInventory.Core\obj\Debug\net9.0\ref\UPDInventory.Core.dll
+C:\UPDInventory\UPDInventory.Core\obj\Debug\net9.0\UPDInventory.Core.sourcelink.json

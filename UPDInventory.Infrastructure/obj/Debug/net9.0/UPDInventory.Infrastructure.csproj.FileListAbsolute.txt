@@ -13,3 +13,4 @@ C:\UPDInventory\UPDInventory.Infrastructure\obj\Debug\net9.0\UPDInventory.Infras
 C:\UPDInventory\UPDInventory.Infrastructure\obj\Debug\net9.0\refint\UPDInventory.Infrastructure.dll
 C:\UPDInventory\UPDInventory.Infrastructure\obj\Debug\net9.0\UPDInventory.Infrastructure.pdb
 C:\UPDInventory\UPDInventory.Infrastructure\obj\Debug\net9.0\ref\UPDInventory.Infrastructure.dll
+C:\UPDInventory\UPDInventory.Infrastructure\obj\Debug\net9.0\UPDInventory.Infrastructure.sourcelink.json

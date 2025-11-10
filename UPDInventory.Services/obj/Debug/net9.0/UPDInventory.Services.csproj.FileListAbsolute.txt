@@ -15,3 +15,4 @@ C:\UPDInventory\UPDInventory.Services\obj\Debug\net9.0\UPDInventory.Services.pdb
 C:\UPDInventory\UPDInventory.Services\obj\Debug\net9.0\ref\UPDInventory.Services.dll
 C:\UPDInventory\UPDInventory.Services\bin\Debug\net9.0\UPDInventory.Infrastructure.dll
 C:\UPDInventory\UPDInventory.Services\bin\Debug\net9.0\UPDInventory.Infrastructure.pdb
+C:\UPDInventory\UPDInventory.Services\obj\Debug\net9.0\UPDInventory.Services.sourcelink.json

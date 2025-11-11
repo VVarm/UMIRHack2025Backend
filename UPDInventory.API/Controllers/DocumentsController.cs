@@ -88,30 +88,42 @@ namespace UPDInventory.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Document>> CreateDocument(Document document)
+        public async Task<ActionResult<Document>> CreateDocument(DocumentCreateDto documentDto)
         {
             var userId = GetUserIdFromClaims();
-            if (!userId.HasValue || !await _organizationService.UserHasAccessToOrganizationAsync(userId.Value, document.OrganizationId))
+            if (!userId.HasValue || !await _organizationService.UserHasAccessToOrganizationAsync(userId.Value, documentDto.OrganizationId))
                 return Forbid();
 
             // Проверяем доступ к складам (если указаны)
-            if (document.SourceWarehouseId.HasValue)
+            if (documentDto.SourceWarehouseId.HasValue)
             {
-                var sourceWarehouse = await _context.Warehouses.FindAsync(document.SourceWarehouseId.Value);
-                if (sourceWarehouse == null || sourceWarehouse.OrganizationId != document.OrganizationId)
+                var sourceWarehouse = await _context.Warehouses.FindAsync(documentDto.SourceWarehouseId.Value);
+                if (sourceWarehouse == null || sourceWarehouse.OrganizationId != documentDto.OrganizationId)
                     return BadRequest(new { message = "Исходный склад не найден или принадлежит другой организации" });
             }
 
-            if (document.DestinationWarehouseId.HasValue)
+            if (documentDto.DestinationWarehouseId.HasValue)
             {
-                var destinationWarehouse = await _context.Warehouses.FindAsync(document.DestinationWarehouseId.Value);
-                if (destinationWarehouse == null || destinationWarehouse.OrganizationId != document.OrganizationId)
+                var destinationWarehouse = await _context.Warehouses.FindAsync(documentDto.DestinationWarehouseId.Value);
+                if (destinationWarehouse == null || destinationWarehouse.OrganizationId != documentDto.OrganizationId)
                     return BadRequest(new { message = "Целевой склад не найден или принадлежит другой организации" });
             }
 
-            // Устанавливаем создателя документа
-            document.CreatedByUserId = userId.Value;
-            document.CreatedAt = DateTime.UtcNow;
+            // Создаем Document из DTO
+            var document = new Document
+            {
+                Type = documentDto.Type,
+                Number = string.IsNullOrEmpty(documentDto.Number) ? await GenerateDocumentNumberAsync(documentDto.OrganizationId, documentDto.Type) : documentDto.Number,
+                Status = "draft",
+                Comment = documentDto.Comment,
+                DocumentDate = documentDto.DocumentDate,
+                OrganizationId = documentDto.OrganizationId,
+                SourceWarehouseId = documentDto.SourceWarehouseId,
+                DestinationWarehouseId = documentDto.DestinationWarehouseId,
+                WarehouseId = documentDto.WarehouseId,
+                CreatedByUserId = userId.Value,
+                CreatedAt = DateTime.UtcNow
+            };
 
             _context.Documents.Add(document);
             await _context.SaveChangesAsync();
@@ -127,40 +139,13 @@ namespace UPDInventory.API.Controllers
                 .Reference(d => d.DestinationWarehouse)
                 .LoadAsync();
             await _context.Entry(document)
-                .Collection(d => d.Items)
-                .Query()
-                .Include(i => i.Product)
+                .Reference(d => d.Warehouse)
+                .LoadAsync();
+            await _context.Entry(document)
+                .Reference(d => d.CreatedBy)
                 .LoadAsync();
 
             return CreatedAtAction(nameof(GetDocument), new { id = document.Id }, document);
-        }
-
-        [HttpPost("{id}/items")]
-        public async Task<ActionResult<DocumentItem>> AddDocumentItem(int id, DocumentItem item)
-        {
-            var document = await _context.Documents.FindAsync(id);
-            if (document == null)
-                return NotFound();
-
-            var userId = GetUserIdFromClaims();
-            if (!userId.HasValue || !await _organizationService.UserHasAccessToOrganizationAsync(userId.Value, document.OrganizationId))
-                return Forbid();
-
-            // Проверяем, что товар принадлежит той же организации
-            var product = await _context.Products.FindAsync(item.ProductId);
-            if (product == null || product.OrganizationId != document.OrganizationId)
-                return BadRequest(new { message = "Товар не найден или принадлежит другой организации" });
-
-            item.DocumentId = id;
-            _context.DocumentItems.Add(item);
-            await _context.SaveChangesAsync();
-
-            // Загружаем связанные данные
-            await _context.Entry(item)
-                .Reference(i => i.Product)
-                .LoadAsync();
-
-            return CreatedAtAction(nameof(GetDocument), new { id = document.Id }, item);
         }
 
         [HttpDelete("{id}")]
@@ -281,6 +266,26 @@ namespace UPDInventory.API.Controllers
                 return userId;
             }
             return null;
+        }
+
+        private async Task<string> GenerateDocumentNumberAsync(int organizationId, DocumentType type)
+        {
+            var prefix = type switch
+            {
+                DocumentType.Receipt => "ПРИХ",
+                DocumentType.WriteOff => "СПИС", 
+                DocumentType.Transfer => "ПЕР",
+                DocumentType.Inventory => "ИНВ",
+                _ => "ДОК"
+            };
+
+            var today = DateTime.Today;
+            var count = await _context.Documents
+                .CountAsync(d => d.OrganizationId == organizationId && 
+                                d.Type == type && 
+                                d.CreatedAt.Year == today.Year);
+
+            return $"{prefix}-{today:yyyyMM}-{count + 1:000}";
         }
     }
     public class AddProductRequest

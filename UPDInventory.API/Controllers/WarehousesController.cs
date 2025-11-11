@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using UPDInventory.Core.Entities;
 using UPDInventory.Core.Interfaces;
 using UPDInventory.Core.Data;
+using UPDInventory.Core.DTOs;
 using System.Security.Claims;
 
 namespace UPDInventory.API.Controllers
@@ -72,11 +73,20 @@ namespace UPDInventory.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Warehouse>> CreateWarehouse(Warehouse warehouse)
+        public async Task<ActionResult<Warehouse>> CreateWarehouse(WarehouseCreateDto warehouseDto)
         {
             var userId = GetUserIdFromClaims();
-            if (!userId.HasValue || !await _organizationService.UserHasAccessToOrganizationAsync(userId.Value, warehouse.OrganizationId))
+            if (!userId.HasValue || !await _organizationService.UserHasAccessToOrganizationAsync(userId.Value, warehouseDto.OrganizationId))
                 return Forbid();
+
+            // Создаем Warehouse из DTO
+            var warehouse = new Warehouse
+            {
+                Name = warehouseDto.Name,
+                Address = warehouseDto.Address,
+                IsActive = warehouseDto.IsActive,
+                OrganizationId = warehouseDto.OrganizationId
+            };
 
             _context.Warehouses.Add(warehouse);
             await _context.SaveChangesAsync();
@@ -85,25 +95,51 @@ namespace UPDInventory.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateWarehouse(int id, Warehouse warehouse)
+        public async Task<IActionResult> UpdateProduct(int id, ProductPartialUpdateDto productDto)
         {
-            if (id != warehouse.Id)
+            if (id != productDto.Id)
                 return BadRequest();
 
-            var existingWarehouse = await _context.Warehouses.FindAsync(id);
-            if (existingWarehouse == null)
+            var existingProduct = await _context.Products.FindAsync(id);
+            if (existingProduct == null)
                 return NotFound();
 
             var userId = GetUserIdFromClaims();
-            if (!userId.HasValue || !await _organizationService.UserHasAccessToOrganizationAsync(userId.Value, warehouse.OrganizationId))
+            if (!userId.HasValue || !await _organizationService.UserHasAccessToOrganizationAsync(userId.Value, productDto.OrganizationId))
                 return Forbid();
 
-            existingWarehouse.Name = warehouse.Name;
-            existingWarehouse.Address = warehouse.Address;
-            existingWarehouse.IsActive = warehouse.IsActive;
+            // Обновляем только переданные поля
+            if (!string.IsNullOrEmpty(productDto.Name))
+                existingProduct.Name = productDto.Name;
+            
+            if (productDto.Barcode != null)
+            {
+                // Проверяем уникальность штрих-кода если он изменился
+                if (productDto.Barcode != existingProduct.Barcode)
+                {
+                    var duplicateProduct = await _context.Products
+                        .FirstOrDefaultAsync(p => p.OrganizationId == productDto.OrganizationId && 
+                                                p.Barcode == productDto.Barcode && 
+                                                p.Id != id);
+                    
+                    if (duplicateProduct != null)
+                    {
+                        return BadRequest(new { message = "Товар с таким штрих-кодом уже существует в организации" });
+                    }
+                }
+                existingProduct.Barcode = productDto.Barcode;
+            }
+            
+            if (productDto.Description != null)
+                existingProduct.Description = productDto.Description;
+            
+            if (!string.IsNullOrEmpty(productDto.Unit))
+                existingProduct.Unit = productDto.Unit;
+            
+            if (productDto.IsActive.HasValue)
+                existingProduct.IsActive = productDto.IsActive.Value;
 
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
 

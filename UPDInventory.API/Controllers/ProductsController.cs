@@ -115,41 +115,41 @@ namespace UPDInventory.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, Product product)
+public async Task<IActionResult> UpdateProduct(int id, ProductUpdateDto productDto)
+{
+    if (id != productDto.Id)
+        return BadRequest();
+
+    var existingProduct = await _context.Products.FindAsync(id);
+    if (existingProduct == null)
+        return NotFound();
+
+    var userId = GetUserIdFromClaims();
+    if (!userId.HasValue || !await _organizationService.UserHasAccessToOrganizationAsync(userId.Value, productDto.OrganizationId))
+        return Forbid();
+
+    // Проверяем уникальность штрих-кода в организации (если изменился)
+    if (!string.IsNullOrEmpty(productDto.Barcode) && productDto.Barcode != existingProduct.Barcode)
+    {
+        var duplicateProduct = await _context.Products
+            .FirstOrDefaultAsync(p => p.OrganizationId == productDto.OrganizationId && p.Barcode == productDto.Barcode && p.Id != id);
+        
+        if (duplicateProduct != null)
         {
-            if (id != product.Id)
-                return BadRequest();
-
-            var existingProduct = await _context.Products.FindAsync(id);
-            if (existingProduct == null)
-                return NotFound();
-
-            var userId = GetUserIdFromClaims();
-            if (!userId.HasValue || !await _organizationService.UserHasAccessToOrganizationAsync(userId.Value, product.OrganizationId))
-                return Forbid();
-
-            // Проверяем уникальность штрих-кода в организации (если изменился)
-            if (!string.IsNullOrEmpty(product.Barcode) && product.Barcode != existingProduct.Barcode)
-            {
-                var duplicateProduct = await _context.Products
-                    .FirstOrDefaultAsync(p => p.OrganizationId == product.OrganizationId && p.Barcode == product.Barcode && p.Id != id);
-                
-                if (duplicateProduct != null)
-                {
-                    return BadRequest(new { message = "Товар с таким штрих-кодом уже существует в организации" });
-                }
-            }
-
-            existingProduct.Name = product.Name;
-            existingProduct.Description = product.Description;
-            existingProduct.Barcode = product.Barcode;
-            existingProduct.Unit = product.Unit;
-            existingProduct.IsActive = product.IsActive;
-
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return BadRequest(new { message = "Товар с таким штрих-кодом уже существует в организации" });
         }
+    }
+
+    existingProduct.Name = productDto.Name;
+    existingProduct.Description = productDto.Description;
+    existingProduct.Barcode = productDto.Barcode;
+    existingProduct.Unit = productDto.Unit;
+    existingProduct.IsActive = productDto.IsActive;
+
+    await _context.SaveChangesAsync();
+
+    return NoContent();
+}
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)

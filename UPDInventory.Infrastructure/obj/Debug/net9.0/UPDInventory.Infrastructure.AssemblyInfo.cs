@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UPDInventory.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c3ccfc37380762959268876aa488120fb7a63ad3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e33c582f52b11053fba8edd46c4792d75735c30f")]
 [assembly: System.Reflection.AssemblyProductAttribute("UPDInventory.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UPDInventory.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -63,7 +63,7 @@ namespace UPDInventory.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<AuthResponse>> Register(RegisterRequest request)
+        public async Task<ActionResult<AuthResponse>> Register(AuthRequest request)
         {
             // Проверка существования пользователя
             if (await _context.Users.AnyAsync(u => u.Email == request.Email))
@@ -101,12 +101,5 @@ namespace UPDInventory.API.Controllers
                 }
             });
         }
-    }
-
-    public class RegisterRequest
-    {
-        public required string Email { get; set; }
-        public required string Password { get; set; }
-        public required string Name { get; set; }
     }
 }

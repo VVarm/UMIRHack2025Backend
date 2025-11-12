@@ -30,6 +30,29 @@ namespace UPDInventory.API.Controllers
             return Ok(organizations);
         }
 
+        [HttpGet("my/mobile")]
+        public async Task<ActionResult<ApiResponse<List<OrganizationResponse>>>> GetMyOrganizationsMobile()
+        {
+            var userId = GetUserIdFromClaims();
+            if (!userId.HasValue)
+                return Unauthorized(ApiResponse<List<OrganizationResponse>>.ErrorResponse("Неавторизованный доступ"));
+
+            var organizations = await _organizationService.GetUserOrganizationsAsync(userId.Value);
+            
+            // Преобразуем в DTO
+            var organizationDtos = organizations.Select(o => new OrganizationResponse
+            {
+                Id = o.Id,
+                Name = o.Name,
+                Inn = o.Inn,
+                Address = o.Address,
+                Phone = o.Phone,
+                UserRole = "storekeeper" // TODO: получить реальную роль
+            }).ToList();
+
+            return Ok(ApiResponse<List<OrganizationResponse>>.SuccessResponse(organizationDtos));
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Organization>> GetOrganization(int id)
         {

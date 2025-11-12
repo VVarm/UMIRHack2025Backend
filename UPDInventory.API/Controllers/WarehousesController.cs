@@ -24,7 +24,7 @@ namespace UPDInventory.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Warehouse>>> GetWarehouses([FromQuery] int? organizationId)
+        public async Task<ActionResult<IEnumerable<WarehouseDto>>> GetWarehouses([FromQuery] int? organizationId)
         {
             var userId = GetUserIdFromClaims();
             if (!userId.HasValue)
@@ -32,27 +32,33 @@ namespace UPDInventory.API.Controllers
 
             IQueryable<Warehouse> query = _context.Warehouses;
 
-            // Если указан organizationId, фильтруем по нему и проверяем доступ
             if (organizationId.HasValue)
             {
                 if (!await _organizationService.UserHasAccessToOrganizationAsync(userId.Value, organizationId.Value))
                     return Forbid();
-
                 query = query.Where(w => w.OrganizationId == organizationId.Value);
             }
             else
             {
-                // Если organizationId не указан, возвращаем склады всех организаций пользователя
                 var userOrganizations = await _organizationService.GetUserOrganizationsAsync(userId.Value);
                 var organizationIds = userOrganizations.Select(o => o.Id);
                 query = query.Where(w => organizationIds.Contains(w.OrganizationId));
             }
 
-            var warehouses = await query
-                .Include(w => w.Organization)
-                .ToListAsync();
+            var warehouses = await query.ToListAsync();
+            
+            // Преобразуем в DTO
+            var warehouseDtos = warehouses.Select(w => new WarehouseDto
+            {
+                Id = w.Id,
+                Name = w.Name,
+                Address = w.Address,
+                IsActive = w.IsActive,
+                OrganizationId = w.OrganizationId,
+                CreatedAt = w.CreatedAt
+            });
 
-            return Ok(warehouses);
+            return Ok(warehouseDtos);
         }
 
         [HttpGet("{id}")]
@@ -95,49 +101,28 @@ namespace UPDInventory.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, ProductPartialUpdateDto productDto)
+        public async Task<IActionResult> UpdateWarehouse(int id, [FromBody] WarehouseUpdateDto warehouseDto)
         {
-            if (id != productDto.Id)
+            if (id != warehouseDto.Id)
                 return BadRequest();
 
-            var existingProduct = await _context.Products.FindAsync(id);
-            if (existingProduct == null)
+            var existingWarehouse = await _context.Warehouses.FindAsync(id);
+            if (existingWarehouse == null)
                 return NotFound();
 
             var userId = GetUserIdFromClaims();
-            if (!userId.HasValue || !await _organizationService.UserHasAccessToOrganizationAsync(userId.Value, productDto.OrganizationId))
+            if (!userId.HasValue || !await _organizationService.UserHasAccessToOrganizationAsync(userId.Value, existingWarehouse.OrganizationId))
                 return Forbid();
 
-            // Обновляем только переданные поля
-            if (!string.IsNullOrEmpty(productDto.Name))
-                existingProduct.Name = productDto.Name;
+            // Обновляем поля
+            if (!string.IsNullOrEmpty(warehouseDto.Name))
+                existingWarehouse.Name = warehouseDto.Name;
             
-            if (productDto.Barcode != null)
-            {
-                // Проверяем уникальность штрих-кода если он изменился
-                if (productDto.Barcode != existingProduct.Barcode)
-                {
-                    var duplicateProduct = await _context.Products
-                        .FirstOrDefaultAsync(p => p.OrganizationId == productDto.OrganizationId && 
-                                                p.Barcode == productDto.Barcode && 
-                                                p.Id != id);
-                    
-                    if (duplicateProduct != null)
-                    {
-                        return BadRequest(new { message = "Товар с таким штрих-кодом уже существует в организации" });
-                    }
-                }
-                existingProduct.Barcode = productDto.Barcode;
-            }
+            if (warehouseDto.Address != null)
+                existingWarehouse.Address = warehouseDto.Address;
             
-            if (productDto.Description != null)
-                existingProduct.Description = productDto.Description;
-            
-            if (!string.IsNullOrEmpty(productDto.Unit))
-                existingProduct.Unit = productDto.Unit;
-            
-            if (productDto.IsActive.HasValue)
-                existingProduct.IsActive = productDto.IsActive.Value;
+            if (warehouseDto.IsActive.HasValue)
+                existingWarehouse.IsActive = warehouseDto.IsActive.Value;
 
             await _context.SaveChangesAsync();
             return NoContent();

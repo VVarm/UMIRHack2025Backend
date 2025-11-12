@@ -55,6 +55,46 @@ namespace UPDInventory.API.Controllers
             return Ok(products);
         }
 
+        [HttpGet("mobile")]
+        public async Task<ActionResult<ApiResponse<List<ProductResponse>>>> GetProductsMobile([FromQuery] int? organizationId)
+        {
+            var userId = GetUserIdFromClaims();
+            if (!userId.HasValue)
+                return Unauthorized(ApiResponse<List<ProductResponse>>.ErrorResponse("Неавторизованный доступ"));
+
+            IQueryable<Product> query = _context.Products;
+
+            if (organizationId.HasValue)
+            {
+                if (!await _organizationService.UserHasAccessToOrganizationAsync(userId.Value, organizationId.Value))
+                    return Forbid();
+
+                query = query.Where(p => p.OrganizationId == organizationId.Value);
+            }
+            else
+            {
+                var userOrganizations = await _organizationService.GetUserOrganizationsAsync(userId.Value);
+                var organizationIds = userOrganizations.Select(o => o.Id);
+                query = query.Where(p => organizationIds.Contains(p.OrganizationId));
+            }
+
+            var products = await query
+                .Where(p => p.IsActive) // только активные товары
+                .Select(p => new ProductResponse
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Barcode = p.Barcode,
+                    Description = p.Description,
+                    OrganizationId = p.OrganizationId,
+                    Unit = p.Unit,
+                    IsActive = p.IsActive
+                })
+                .ToListAsync();
+
+            return Ok(ApiResponse<List<ProductResponse>>.SuccessResponse(products));
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UPDInventory.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e33c582f52b11053fba8edd46c4792d75735c30f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9dada448510fcaa43d44e45d5a0cba817af41553")]
 [assembly: System.Reflection.AssemblyProductAttribute("UPDInventory.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UPDInventory.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
